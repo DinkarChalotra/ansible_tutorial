@@ -1,0 +1,28 @@
+---
+
+# Hosts = provide the server details, all means all the servers
+- hosts: all
+
+# become - run as sudo (default)
+  become: true
+
+  # thats where we want to define our actual tasks
+  tasks:
+
+# describe the name of the taks, this will pop up in the terminal window.
+# similar to commenting
+  - name: install apache2 package
+
+  # Calling the apt module to do the installation, here it will install apache2
+    apt:
+      name: apache2
+      state: latest
+
+  - name: add php support for apache
+    apt:
+      name: libapache2-mod-php
+      state: latest
+  
+  - name: update repository index
+    apt:
+      update_cache: yes
