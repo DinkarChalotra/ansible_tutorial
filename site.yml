@@ -60,6 +60,32 @@
       state: latest
     when: ansible_distribution ==  "CentOS"
 
+  - name: start httpd (CentOS)
+    tags: apache,centos,https
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: change email address for admin
+    tags: apache,centos,httpd
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^ServerAdmin'
+      line: ServerAdmin somebody@somehwere.net
+    when: ansible_distribution == "CentOS"
+    # register will keep the state of the variable which we will refer in the next section
+    register: httpd
+  
+  - name: restart httpd (CentOS)
+    tags: apache,centos,httpd
+    service:
+      name: httpd
+      state: restarted
+  # This is where we will refer to the register variable's state
+    when: httpd.changed
+
   - name: copy default html file for site
     tags: apache,apache2,httpd
     copy:
