@@ -20,6 +20,30 @@
       update_cache: yes
     when: ansible_distribution ==  "Ubuntu"
 
+- hosts: all
+  become: true
+  tasks:
+  - name: create user dinkar
+    tags: always
+    user:
+      name: dinkar
+      groups: root
+  
+  - name: add ssh key for dinkar
+    tags: always
+    authorized_key:
+      user: dinkar
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGSRj75JoIcRvkgbdnn7E35vSkS+eSZNk3//6EPSezpQ ansiblekey"
+
+  - name: add sudoers file for dinkar
+    tags: always
+    copy:
+      src: sudoer_dinkar
+      dest: /etc/sudoers.d/dinkar
+      owner: dc
+      group: root
+      mode: 0440
+
 - hosts: workstations
   become: true
   tasks:
@@ -84,6 +108,7 @@
       name: httpd
       state: restarted
   # This is where we will refer to the register variable's state
+  # Make sure to keep variables different name for multiple changes
     when: httpd.changed
 
   - name: copy default html file for site
