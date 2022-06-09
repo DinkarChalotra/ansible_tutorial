@@ -6,43 +6,25 @@
   # Pre-tasks will make sure that these tasks will run before the other tasks
   pre_tasks:
 
-  - name: install updates (CentOS)
+  - name: update repo cache (CentOS)
     tags: always
     dnf:
-      update_only: yes
       update_cache: yes
+    changed_when: false
     when: ansible_distribution ==  "CentOS"
 
-  - name: install updates (Ubuntu)
+  - name: update repo cache (Ubuntu)
     tags: always
     apt:
-      upgrade: dist
       update_cache: yes
+    changed_when: false
     when: ansible_distribution ==  "Ubuntu"
-
-- hosts: all
-  become: true
-  tasks:
-  - name: create user dinkar
-    tags: always
-    user:
-      name: dinkar
-      groups: root
   
   - name: add ssh key for dinkar
     tags: always
     authorized_key:
       user: dinkar
       key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGSRj75JoIcRvkgbdnn7E35vSkS+eSZNk3//6EPSezpQ ansiblekey"
-
-  - name: add sudoers file for dinkar
-    tags: always
-    copy:
-      src: sudoer_dinkar
-      dest: /etc/sudoers.d/dinkar
-      owner: dc
-      group: root
-      mode: 0440
 
 - hosts: workstations
   become: true
