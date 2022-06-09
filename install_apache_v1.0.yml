@@ -1,0 +1,16 @@
+---
+
+# Hosts = provide the server details, all means all the servers
+- hosts: all
+  become: true
+  tasks:
+
+  - name: install apache and php
+  # package is a generic OS package manager which will pick and choose dedicated package modules for the Operating systems
+    package:
+      name:
+      # Below are variables defined in the inventory files representing their values
+        - "{{  apache_package  }}"
+        - "{{  php_package  }}"
+      state: latest
+      update_cache: yes
