@@ -14,15 +14,19 @@
   - name: install apache2 package
 
   # Calling the apt module to do the installation, here it will install apache2
+  # Use when statement when you want to do the distribution with a condition 
     apt:
       name: apache2
       state: latest
+    when: ansible_distribution ==  ["Ubuntu", "Debian"]
 
   - name: add php support for apache
     apt:
       name: libapache2-mod-php
       state: latest
+    when: ansible_distribution ==  ["Ubuntu", "Debian"]
   
-  - name: update repository index
-    apt:
-      update_cache: yes
+  #- name: update repository index
+  # apt:
+   #   update_cache: yes
+     #when: ansible_distribution ==  ["Ubuntu", "Debian"]

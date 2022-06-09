@@ -1,0 +1,52 @@
+---
+
+# Hosts = provide the server details, all means all the servers
+- hosts: all
+
+# become - run as sudo (default)
+  become: true
+
+  # thats where we want to define our actual tasks
+  tasks:
+
+# describe the name of the taks, this will pop up in the terminal window.
+# similar to commenting
+  - name: install apache2 package
+
+  # Calling the apt module to do the installation, here it will install apache2
+  # Use when statement when you want to do the distribution with a condition 
+    apt:
+      name: apache2
+      state: latest
+    when: ansible_distribution ==  "Ubuntu"
+
+  - name: add php support for apache
+    apt:
+      name: libapache2-mod-php
+      state: latest
+    when: ansible_distribution ==  "Ubuntu"
+  
+  #- name: update repository index
+  # apt:
+   #   update_cache: yes
+   #when: ansible_distribution ==  "Ubuntu"
+
+
+  - name: install httpd package
+
+  # Calling the dnf module to do the installation, here it will install httpd on CentOS
+  # Use when statement when you want to do the distribution with a condition 
+    dnf:
+      name: httpd
+      state: latest
+    when: ansible_distribution ==  "CentOS"
+
+  - name: add php support for apache
+    dnf:
+      name: php
+      state: latest
+    when: ansible_distribution ==  "CentOS"
+
+# have to run below commands manually on the server to start the httpd service on CentOS. Not in the playbook yet
+# sudo systemctl start httpd
+# sudo firewall-cmd --add-port=80/tcp
