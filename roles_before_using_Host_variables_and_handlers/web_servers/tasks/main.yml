@@ -1,18 +1,29 @@
-- name: install apache2 and php packages
-  tags: apache,httpd,php
-  package:
+- name: install apache2 and php packages for Ubuntu
+  tags: apache,apache2,ubuntu
+  apt:
     name:
-      - "{{  apache_package_name  }}"
-      - "{{  php_package_name  }}"
+      - apache2
+      - libapache2-mod-php
     state: latest
+  when: ansible_distribution ==  "Ubuntu"
 
-- name: start and enable apache service
-  tags: apache,httpd
+- name: install httpd and php packages for CentOS
+  tags: apache,httpd,centos
+  dnf:
+    name:
+      - httpd
+      - php
+    state: latest
+  when: ansible_distribution ==  "CentOS"
+
+- name: start httpd (CentOS)
+  tags: apache,centos,https
   service:
-    name: "{{  apache_service  }}"
+    name: httpd
     state: started
     enabled: yes
-# dont really need this one but we are just keeping it here
+  when: ansible_distribution == "CentOS"
+
 - name: change email address for admin
   tags: apache,centos,httpd
   lineinfile:
@@ -21,16 +32,15 @@
     line: ServerAdmin somebody@somehwere.net
   when: ansible_distribution == "CentOS"
   # register will keep the state of the variable which we will refer in the next section
-  register: apache
-
-- name: restart httpd
-  tags: apache,httpd
+  register: httpd
+- name: restart httpd (CentOS)
+  tags: apache,centos,httpd
   service:
-    name: ""{{  apache_service  }}
+    name: httpd
     state: restarted
 # This is where we will refer to the register variable's state
 # Make sure to keep variables different name for multiple changes
-  when: apache.changed
+  when: httpd.changed
 
 - name: copy default html file for site
   tags: apache,apache2,httpd
