@@ -18,10 +18,19 @@
   lineinfile:
     path: /etc/httpd/conf/httpd.conf
     regexp: '^ServerAdmin'
-    line: ServerAdmin somebody@somehwere.org
+    line: ServerAdmin somebody@somehwere.net
   when: ansible_distribution == "CentOS"
   # register will keep the state of the variable which we will refer in the next section
-  notify: restart_apache
+  register: apache
+
+- name: restart httpd
+  tags: apache,httpd
+  service:
+    name: "{{  apache_service  }}"
+    state: restarted
+# This is where we will refer to the register variable's state
+# Make sure to keep variables different name for multiple changes
+  when: apache.changed
 
 - name: copy default html file for site
   tags: apache,apache2,httpd
