@@ -1,0 +1,5 @@
+- name: add ssh key for dinkar
+  tags: always
+  authorized_key:
+    user: dinkar
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGSRj75JoIcRvkgbdnn7E35vSkS+eSZNk3//6EPSezpQ ansiblekey"
